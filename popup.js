@@ -5,6 +5,10 @@ document.addEventListener('DOMContentLoaded', function() {
   const heightSlider = document.getElementById('heightSlider');
   const heightValue = document.getElementById('heightValue');
 
+  // Debounce timers
+  let widthDebounceTimer = null;
+  let heightDebounceTimer = null;
+
   // Helper function to safely send message to content script
   function sendMessageToTab(message) {
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
@@ -36,25 +40,57 @@ document.addEventListener('DOMContentLoaded', function() {
   toggleCheckbox.addEventListener('change', () => {
     const enabled = toggleCheckbox.checked;
     chrome.storage.sync.set({ cssEnabled: enabled }, () => {
+      if (chrome.runtime.lastError) {
+        console.log('Storage error:', chrome.runtime.lastError.message);
+        return;
+      }
       sendMessageToTab({ action: 'toggleCSS', enabled: enabled });
     });
   });
 
-  // Width slider changes
+  // Width slider changes - update display and CSS immediately, debounce storage writes
   widthSlider.addEventListener('input', () => {
     const newWidth = parseInt(widthSlider.value, 10);
     widthValue.textContent = newWidth;
-    chrome.storage.sync.set({ customWidth: newWidth }, () => {
-      sendMessageToTab({ action: 'updateWidth', width: newWidth });
-    });
+    
+    // Update CSS immediately for smooth experience
+    sendMessageToTab({ action: 'updateWidth', width: newWidth });
+    
+    // Clear existing timer
+    if (widthDebounceTimer) {
+      clearTimeout(widthDebounceTimer);
+    }
+    
+    // Debounce storage writes to avoid quota errors
+    widthDebounceTimer = setTimeout(() => {
+      chrome.storage.sync.set({ customWidth: newWidth }, () => {
+        if (chrome.runtime.lastError) {
+          console.log('Storage error:', chrome.runtime.lastError.message);
+        }
+      });
+    }, 300);
   });
 
-  // Height slider changes
+  // Height slider changes - update display and CSS immediately, debounce storage writes
   heightSlider.addEventListener('input', () => {
     const newHeight = parseInt(heightSlider.value, 10);
     heightValue.textContent = newHeight;
-    chrome.storage.sync.set({ customMinHeight: newHeight }, () => {
-      sendMessageToTab({ action: 'updateMinHeight', height: newHeight });
-    });
+    
+    // Update CSS immediately for smooth experience
+    sendMessageToTab({ action: 'updateMinHeight', height: newHeight });
+    
+    // Clear existing timer
+    if (heightDebounceTimer) {
+      clearTimeout(heightDebounceTimer);
+    }
+    
+    // Debounce storage writes to avoid quota errors
+    heightDebounceTimer = setTimeout(() => {
+      chrome.storage.sync.set({ customMinHeight: newHeight }, () => {
+        if (chrome.runtime.lastError) {
+          console.log('Storage error:', chrome.runtime.lastError.message);
+        }
+      });
+    }, 300);
   });
 });
