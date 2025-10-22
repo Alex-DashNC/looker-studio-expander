@@ -5,6 +5,24 @@ document.addEventListener('DOMContentLoaded', function() {
   const heightSlider = document.getElementById('heightSlider');
   const heightValue = document.getElementById('heightValue');
 
+  // Helper function to safely send message to content script
+  function sendMessageToTab(message) {
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+      if (!tabs[0]) return;
+      
+      const url = tabs[0].url;
+      // Only send message if we're on a Looker Studio page
+      if (url && url.startsWith('https://lookerstudio.google.com/')) {
+        chrome.tabs.sendMessage(tabs[0].id, message, function(response) {
+          // Handle any errors silently
+          if (chrome.runtime.lastError) {
+            console.log('Extension message:', chrome.runtime.lastError.message);
+          }
+        });
+      }
+    });
+  }
+
   // Load saved preferences
   chrome.storage.sync.get(['cssEnabled', 'customWidth', 'customMinHeight'], (data) => {
     toggleCheckbox.checked = (typeof data.cssEnabled === 'boolean') ? data.cssEnabled : true;
@@ -18,9 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
   toggleCheckbox.addEventListener('change', () => {
     const enabled = toggleCheckbox.checked;
     chrome.storage.sync.set({ cssEnabled: enabled }, () => {
-      chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, { action: 'toggleCSS', enabled: enabled });
-      });
+      sendMessageToTab({ action: 'toggleCSS', enabled: enabled });
     });
   });
 
@@ -29,9 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const newWidth = parseInt(widthSlider.value, 10);
     widthValue.textContent = newWidth;
     chrome.storage.sync.set({ customWidth: newWidth }, () => {
-      chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, { action: 'updateWidth', width: newWidth });
-      });
+      sendMessageToTab({ action: 'updateWidth', width: newWidth });
     });
   });
 
@@ -40,9 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const newHeight = parseInt(heightSlider.value, 10);
     heightValue.textContent = newHeight;
     chrome.storage.sync.set({ customMinHeight: newHeight }, () => {
-      chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        chrome.tabs.sendMessage(tabs[0].id, { action: 'updateMinHeight', height: newHeight });
-      });
+      sendMessageToTab({ action: 'updateMinHeight', height: newHeight });
     });
   });
 });
