@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f9f9f9;
+      min-width: 250px;
+      color: #333;
+    }
+
+    .container {
+      padding: 16px;
+    }
+
+    h1 {
+      font-size: 1.1rem;
+      margin: 0 0 16px 0;
+      font-weight: 600;
+    }
+
+    .section {
+      background: #fff;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .toggle-label {
+      font-size: 0.95rem;
+      font-weight: 500;
+      margin-right: 12px;
+    }
+
+    /* Toggle Switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 45px;
+      height: 24px;
+    }
+
+    .switch input { 
+      opacity: 0; 
+      width: 0; 
+      height: 0; 
+    }
+
+    .slider-switch {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #ccc;
+      border-radius: 24px;
+      transition: .4s;
+    }
+
+    .slider-switch:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: #fff;
+      border-radius: 50%;
+      transition: .4s;
+    }
+
+    input:checked + .slider-switch {
+      background-color: #4caf50;
+    }
+
+    input:checked + .slider-switch:before {
+      transform: translateX(21px);
+    }
+
+    .slider-container {
+      margin-top: 8px;
+    }
+
+    .slider-title {
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+
+    .slider-value {
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      margin: 0 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Looker Studio CSS Tweaker</h1>
+    <div class="section">
+      <div class="toggle-container">
+        <span class="toggle-label">Enable Custom CSS</span>
+        <label class="switch">
+          <input type="checkbox" id="toggle-css">
+          <span class="slider-switch"></span>
+        </label>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="slider-title">Concept Menu Width (vw)</div>
+      <div class="slider-row">
+        <span class="slider-value" id="widthValue">68</span>
+        <input type="range" id="widthSlider" min="40" max="100" value="68">
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="slider-title">CodeMirror Min-Height (px)</div>
+      <div class="slider-row">
+        <span class="slider-value" id="heightValue">600</span>
+        <input type="range" id="heightSlider" min="300" max="1000" value="600">
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
