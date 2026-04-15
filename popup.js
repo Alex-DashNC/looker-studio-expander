@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
       
       const url = tabs[0].url;
       // Only send message if we're on a Looker Studio page
-      if (url && url.startsWith('https://lookerstudio.google.com/')) {
+      if (url && (url.startsWith('https://datastudio.google.com/') || url.startsWith('https://lookerstudio.google.com/'))) {
         chrome.tabs.sendMessage(tabs[0].id, message, function(response) {
           // Handle any errors silently
           if (chrome.runtime.lastError) {

@@ -14,10 +14,10 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://lookerstudio.google.com/*"],
+      "matches": ["https://lookerstudio.google.com/*", "https://datastudio.google.com/*"],
       "js": ["content.js"],
       "run_at": "document_end"
     }
   ],
-  "host_permissions": ["https://lookerstudio.google.com/*"]
+  "host_permissions": ["https://lookerstudio.google.com/*", "https://datastudio.google.com/*"]
 }

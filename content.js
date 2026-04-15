@@ -5,15 +5,9 @@
   function generateCSS(widthValue, minHeightValue) {
     return `
       /* Custom styles for Google Looker Studio editor */
-      DIV.ng2-concept-menu.with-formula {
+      .ng2-concept-menu.metric.with-formula {
         width: ${widthValue}vw !important;
         max-width: calc(100vw - 107px) !important;
-      }
-
-      ._md-panel-shown .md-panel {
-        right: 320px !important;
-        left: auto !important;
-        top: 104px !important;
       }
 
       .new-calculated-fields-container .formula-section .CodeMirror {
@@ -37,7 +31,9 @@
     if (!styleElement) {
       styleElement = document.createElement('style');
       styleElement.type = 'text/css';
+      styleElement.id = 'looker-studio-expander-styles';
       document.head.appendChild(styleElement);
+      console.log('[Looker Expander] style tag injected');
     }
 
     styleElement.textContent = generateCSS(widthValue, minHeightValue);
